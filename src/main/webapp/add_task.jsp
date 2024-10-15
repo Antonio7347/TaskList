@@ -23,7 +23,7 @@
 
     <!-- Campo para la descripción -->
     <div class="mb-3">
-      <label for="description" class="form-label">Descripción</label>
+      <label for="description" class="form-label">Descripcion</label>
       <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
     </div>
 
