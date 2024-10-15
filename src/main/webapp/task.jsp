@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Joseb
-  Date: 15/10/2024
-  Time: 10:25 a. m.
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page import="org.example.tasklist.model.TaskManager" %>
 <%@ page import="java.util.List" %>
 <%@ page import="org.example.tasklist.model.Task" %>
@@ -32,13 +25,22 @@
         </thead>
         <tbody>
         <%
+            // Obtener el TaskManager de la sesión
             TaskManager manager = (TaskManager) session.getAttribute("taskManager");
             if (manager == null) {
                 manager = new TaskManager();
                 session.setAttribute("taskManager", manager);
             }
 
+            // Obtener la lista de tareas pendientes
             List<Task> tasks = manager.getPendingTasks();
+            if (tasks.isEmpty()) {
+        %>
+        <tr>
+            <td colspan="5" class="text-center">No hay tareas pendientes.</td>
+        </tr>
+        <%
+        } else {
             for (Task task : tasks) {
         %>
         <tr>
@@ -47,14 +49,16 @@
             <td><%= task.getFecha() %></td>
             <td><%= task.isPendiente() ? "Pendiente" : "Completada" %></td>
             <td>
-                <form action="task_controller.jsp" method="post" style="display:inline;">
-                    <input type="hidden" name="action" value="delete">
-                    <input type="hidden" name="taskName" value="<%= task.getName() %>">
+                <!-- Formulario para eliminar una tarea específica -->
+                <form action="TareaServlet" method="post" style="display:inline;">
+                    <input type="hidden" name="accion" value="eliminar">
+                    <input type="hidden" name="descripcion" value="<%= task.getName() %>">
                     <button class="btn btn-danger">Eliminar</button>
                 </form>
             </td>
         </tr>
         <%
+                }
             }
         %>
         </tbody>
@@ -62,7 +66,7 @@
 
     <a href="index.jsp" class="btn btn-primary">Volver</a>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-

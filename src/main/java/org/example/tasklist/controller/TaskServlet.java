@@ -1,22 +1,22 @@
 package org.example.tasklist.controller;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.example.tasklist.model.Task;
+import org.example.tasklist.model.TaskManager;
 
-import javax.gitservlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet("/TareaServlet")
-public class TareaServlet extends HttpServlet {
+@WebServlet("/TaskServlet")
+public class TaskServlet extends HttpServlet {
 
-    // Lista que almacenará las tareas
-    private List<Tarea> listaTareas = new ArrayList<>();
+    // Instancia de TaskManager para gestionar las tareas
+    private TaskManager taskManager = new TaskManager();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -25,19 +25,24 @@ public class TareaServlet extends HttpServlet {
         switch (accion) {
             case "agregar":
                 // Agregar nueva tarea
+                String nombre = request.getParameter("nombre");
                 String descripcion = request.getParameter("descripcion");
-                listaTareas.add(new Tarea(descripcion, true)); // Asumimos que una nueva tarea está pendiente
+                String fecha = request.getParameter("fecha");
+                boolean pendiente = Boolean.parseBoolean(request.getParameter("pendiente"));
+
+                Task nuevaTarea = new Task(nombre, descripcion, fecha, pendiente);
+                taskManager.addTask(nuevaTarea);
                 break;
 
             case "eliminar":
                 // Eliminar tarea específica
-                String descripcionEliminar = request.getParameter("descripcion");
-                listaTareas.removeIf(tarea -> tarea.getDescripcion().equals(descripcionEliminar));
+                String nombreEliminar = request.getParameter("nombre");
+                taskManager.deleteTask(nombreEliminar);
                 break;
 
             case "limpiar":
                 // Limpiar todas las tareas
-                listaTareas.clear();
+                taskManager.getPendingTasks().clear();
                 break;
 
             case "descargarTxt":
@@ -45,8 +50,9 @@ public class TareaServlet extends HttpServlet {
                 response.setContentType("text/plain");
                 response.setHeader("Content-Disposition", "attachment;filename=tareas.txt");
                 PrintWriter out = response.getWriter();
-                for (Tarea tarea : listaTareas) {
-                    out.println(tarea.getDescripcion() + " - " + (tarea.isPendiente() ? "Pendiente" : "Completada"));
+                List<Task> tareasPendientes = taskManager.getPendingTasks();
+                for (Task task : tareasPendientes) {
+                    out.println(task.getName() + " - " + task.getDescription() + " - " + task.getFecha() + " - " + (task.isPendiente() ? "Pendiente" : "Completada"));
                 }
                 out.flush();
                 return; // Detener la ejecución para evitar el forward
@@ -56,7 +62,7 @@ public class TareaServlet extends HttpServlet {
         }
 
         // Actualizar la lista de tareas en la vista (index.jsp)
-        request.setAttribute("listaTareas", listaTareas);
+        request.setAttribute("listaTareas", taskManager.getPendingTasks());
         request.getRequestDispatcher("index.jsp").forward(request, response);
     }
 
