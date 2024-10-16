@@ -1,19 +1,20 @@
 package org.example.tasklist.model;
 
+import java.util.Date;
+
 public class Tarea {
     private String nombre;
     private String descripcion;
-    private String fecha;
+    private Date fecha;
     private boolean pendiente;
 
-    public Tarea(String nombre, String descripcion, String fecha) {
+    public Tarea(String nombre, String descripcion, Date fecha) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.fecha = fecha;
-        this.pendiente = true;  // Todas las tareas comienzan como pendientes
+        this.pendiente = true;
     }
 
-    // Getters y Setters
     public String getNombre() {
         return nombre;
     }
@@ -30,11 +31,11 @@ public class Tarea {
         this.descripcion = descripcion;
     }
 
-    public String getFecha() {
+    public Date getFecha() {
         return fecha;
     }
 
-    public void setFecha(String fecha) {
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 
@@ -46,4 +47,3 @@ public class Tarea {
         this.pendiente = pendiente;
     }
 }
-
