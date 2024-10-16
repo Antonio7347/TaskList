@@ -61,7 +61,7 @@ public class TareaServlet extends HttpServlet {
         sesion.setAttribute("mensaje", mensaje);
 
         if (operacionExitosa) {
-            response.sendRedirect("listaTareas.jsp?success=true");
+           response.sendRedirect("task.jsp");
         } else {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, mensaje);
         }
