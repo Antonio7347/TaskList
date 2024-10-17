@@ -24,7 +24,7 @@ public class DescargarTxtServlet extends HttpServlet {
 
         if (gestor == null || gestor.obtenerTodasLasTareas().isEmpty()) {
             sesion.setAttribute("mensaje", "No hay tareas disponibles para descargar.");
-            response.sendRedirect("listaTareas.jsp?error=true");
+            response.sendRedirect("index.jsp");
             return;
         }
 
